@@ -1,18 +1,692 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#080812"><title>Reality-1 · Dream the Muse</title>
-<style>:root{color-scheme:dark;font-family:system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;background:#080812;color:#eee;min-height:100svh;padding:24px;padding:max(24px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left))}main{max-width:820px;margin:8vh auto;text-align:center}h1{letter-spacing:.14em;font-size:clamp(28px,7vw,56px)}p{line-height:1.7}.nodes{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin:36px 0}button,a.link{font:inherit;min-height:44px;min-width:44px;border:1px solid #62627e;border-radius:16px;background:#141423;color:#fff;padding:14px 20px;cursor:pointer}button:active{transform:scale(.92)}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #00eaff;outline-offset:4px}.node{width:200px;min-height:150px}.shape{display:block;width:48px;height:48px;margin:0 auto 20px;background:#00eaff}.diamond{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}.triangle{background:#b55aff;clip-path:polygon(50% 0,100% 100%,0 100%)}.circle{border-radius:50%;background:#4285ff}dialog{background:#10101c;color:#eee;width:min(94vw,640px);max-height:85svh;border:1px solid #00eaff;border-radius:20px;padding:24px;overflow:auto}dialog::backdrop{background:#000c}#content{overflow-wrap:anywhere}label{display:block;margin:20px 0}input{font:inherit;min-height:44px;max-width:100%}input[type=range]{display:block;width:100%}img,audio{max-width:100%}img{max-height:45svh;object-fit:contain}pre{white-space:pre-wrap;overflow-wrap:anywhere}a{color:#62eaff}footer{margin-top:40px;color:#aaa;font-size:13px}.actions{display:flex;flex-wrap:wrap;gap:12px;margin:20px 0}@media(prefers-reduced-motion:reduce){button:active{transform:none}}</style></head>
-<body><main><p>Dream the Muse · Core 1052 / Oracle 387</p><h1>REALITY-1</h1><p>Изображение · звук · текст</p><div class="nodes"><button class="node" data-mode="visual"><span class="shape diamond" aria-hidden="true"></span>Визуальный код</button><button class="node" data-mode="audio"><span class="shape triangle" aria-hidden="true"></span>Аудиорезонанс</button><button class="node" data-mode="text"><span class="shape circle" aria-hidden="true"></span>Текстовый вектор</button></div><p>387 → 1052 → ∞<br>105.2 Гц — демотон, не телеметрия</p><button id="diagnose">Ω-Recovery · отчёт</button><p><a href="./mobile-check.html">Мобильная диагностика</a></p><footer>Rebuild 3 · Локальный прототип<br>Safari/iOS: требуется проверка на устройстве. Файлы не загружаются на сервер.</footer></main><dialog id="modal" aria-labelledby="heading"><h2 id="heading"></h2><div id="content"></div><div class="actions"><button id="close">Закрыть</button></div></dialog>
-<script>
-'use strict';
-const modal=document.getElementById('modal'),content=document.getElementById('content'),heading=document.getElementById('heading');let context=null,osc=null,gain=null,player=null,objectURL=null,generation=0,previousFocus=null;
-function stopTone(){generation++;if(osc){try{osc.stop()}catch(e){}osc.disconnect();osc=null}if(gain){gain.disconnect();gain=null}if(context){const old=context;context=null;old.close().catch(()=>{})}}
-function stopAll(){stopTone();if(player)player.pause()}
-function revoke(){if(objectURL){URL.revokeObjectURL(objectURL);objectURL=null}}
-function clean(){stopAll();if(player){player.removeAttribute('src');player.load();player=null}revoke()}
-function el(tag,value,parent=content){const n=document.createElement(tag);if(value)n.textContent=value;parent.append(n);return n}
-function openPanel(title){if(typeof modal.showModal!=='function'){alert('Этот браузер не поддерживает диалог. Обновите браузер.');return false}clean();previousFocus=document.activeElement;heading.textContent=title;content.replaceChildren();if(!modal.open)modal.showModal();return true}
-function choose(label,accept,callback){const l=el('label',label),i=el('input','',l);i.type='file';i.accept=accept;i.addEventListener('change',()=>{const f=i.files&&i.files[0];if(f)callback(f)})}
-function audioPanel(){if(!openPanel('Аудиорезонанс'))return;el('p','Начните с низкой громкости устройства.');const status=el('p','Звук остановлен.');status.setAttribute('role','status');const label=el('label','Уровень демотона'),volume=el('input','',label);volume.type='range';volume.min='0';volume.max='0.1';volume.step='0.005';volume.value='0.025';volume.oninput=()=>{if(gain&&context)gain.gain.setTargetAtTime(Number(volume.value),context.currentTime,0.02)};const controls=el('div');controls.className='actions';const start=el('button','Включить демотон',controls);start.onclick=async()=>{stopAll();const token=generation;start.disabled=true;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw Error('Web Audio недоступен');const local=new AC();context=local;await local.resume();if(token!==generation||context!==local||!modal.open)return;if(local.state!=='running')throw Error('Браузер не разрешил запуск звука');osc=local.createOscillator();gain=local.createGain();osc.frequency.value=105.2;gain.gain.value=Number(volume.value);osc.connect(gain).connect(local.destination);osc.start();status.textContent='Демотон 105.2 Гц включён.'}catch(e){if(token===generation){stopTone();status.textContent='Ошибка: '+e.message}}finally{start.disabled=false}};el('button','Остановить звук',controls).onclick=()=>{stopAll();status.textContent='Звук остановлен.'};const audio=el('audio');player=audio;audio.controls=true;audio.preload='metadata';audio.onplay=()=>{stopTone();status.textContent='Воспроизводится локальный файл.'};audio.onpause=()=>{if(!osc)status.textContent='Воспроизведение приостановлено.'};audio.onended=()=>{status.textContent='Воспроизведение завершено.'};audio.onerror=()=>{if(audio.hasAttribute('src'))status.textContent='Не удалось прочитать файл: проверьте формат.'};choose('Выбрать аудиофайл','audio/*',f=>{stopAll();audio.removeAttribute('src');audio.load();revoke();objectURL=URL.createObjectURL(f);audio.src=objectURL;status.textContent='Выбран: '+f.name})}
-for(const b of document.querySelectorAll('[data-mode]'))b.onclick=()=>{if(b.dataset.mode==='audio'){audioPanel();return}if(b.dataset.mode==='visual'){if(!openPanel('Визуальный код'))return;const status=el('p','Выберите изображение.');status.setAttribute('role','status');const image=el('img');image.alt='Выбранное изображение';image.hidden=true;image.onload=()=>{image.hidden=false;status.textContent='Изображение загружено.'};image.onerror=()=>{image.hidden=true;status.textContent='Не удалось прочитать изображение.'};choose('Изображение','image/*',f=>{image.removeAttribute('src');revoke();objectURL=URL.createObjectURL(f);image.src=objectURL})}else{if(!openPanel('Текстовый вектор'))return;el('p','Reality-1 — художественный мультимодальный прототип Dream the Muse.');el('p','Изображения и аудио обрабатываются локально. Постоянный архив, авторизация, интеллектуальный BGM и серверное восстановление в этой сборке не реализованы.')}};
-document.getElementById('close').onclick=()=>modal.close();modal.addEventListener('close',()=>{clean();if(previousFocus&&previousFocus.isConnected)previousFocus.focus()});modal.addEventListener('cancel',clean);window.addEventListener('pagehide',clean);document.addEventListener('visibilitychange',()=>{if(document.hidden)stopAll()});document.getElementById('diagnose').onclick=()=>{if(!openPanel('Локальный отчёт'))return;el('p','Наличие API не подтверждает работу звука или безопасность.');el('pre',JSON.stringify({revision:3,mode:'LOCAL_DEMO',web_audio:!!(window.AudioContext||window.webkitAudioContext),dialog:typeof modal.showModal==='function',safari_ios:'NOT_TESTED',security_assessed:false},null,2))};
-</script></body></html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+  <meta name="theme-color" content="#080812">
+
+  <title>Reality-1 · Dream the Muse</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      color-scheme: dark;
+      font-family: system-ui, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #080812;
+      color: #eee;
+      min-height: 100vh;
+      min-height: 100svh;
+      padding: 24px;
+      padding:
+        max(24px, env(safe-area-inset-top))
+        max(24px, env(safe-area-inset-right))
+        max(24px, env(safe-area-inset-bottom))
+        max(24px, env(safe-area-inset-left));
+    }
+
+    main {
+      max-width: 820px;
+      margin: 6vh auto;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: clamp(28px, 7vw, 56px);
+      letter-spacing: 0.1em;
+    }
+
+    p {
+      line-height: 1.7;
+    }
+
+    button,
+    .link,
+    input {
+      font: inherit;
+    }
+
+    button,
+    .link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 14px 20px;
+      border: 1px solid #62627e;
+      border-radius: 16px;
+      background: #141423;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    :focus-visible {
+      outline: 3px solid #00eaff;
+      outline-offset: 4px;
+    }
+
+    .nodes,
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin: 24px 0;
+    }
+
+    .node {
+      width: 200px;
+      min-height: 150px;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .shape {
+      display: block;
+      width: 48px;
+      height: 48px;
+      background: #00eaff;
+    }
+
+    .diamond {
+      clip-path: polygon(
+        50% 0,
+        100% 50%,
+        50% 100%,
+        0 50%
+      );
+    }
+
+    .triangle {
+      background: #b55aff;
+      clip-path: polygon(
+        50% 0,
+        100% 100%,
+        0 100%
+      );
+    }
+
+    .circle {
+      border-radius: 50%;
+      background: #4285ff;
+    }
+
+    dialog {
+      background: #10101c;
+      color: #eee;
+      width: min(94vw, 640px);
+      max-height: 85vh;
+      max-height: 85svh;
+      border: 1px solid #00eaff;
+      border-radius: 20px;
+      padding: 24px;
+      overflow: auto;
+    }
+
+    dialog::backdrop {
+      background: #000c;
+    }
+
+    label {
+      display: block;
+      margin: 20px 0;
+    }
+
+    input {
+      min-height: 44px;
+      max-width: 100%;
+    }
+
+    input[type="range"] {
+      display: block;
+      width: 100%;
+    }
+
+    img,
+    audio {
+      max-width: 100%;
+    }
+
+    img {
+      max-height: 45vh;
+      object-fit: contain;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      text-align: left;
+      background: #10101c;
+      padding: 16px;
+      border-radius: 12px;
+    }
+
+    a {
+      color: #62eaff;
+    }
+
+    footer {
+      margin-top: 40px;
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    #content {
+      overflow-wrap: anywhere;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      button:active {
+        transform: scale(0.97);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <p>Dream the Muse · Core 1052 / Oracle 387</p>
+
+    <h1>REALITY-1</h1>
+
+    <p>Изображение · звук · текст</p>
+
+    <div class="nodes">
+      <button class="node" data-mode="visual">
+        <span class="shape diamond" aria-hidden="true"></span>
+        Визуальный код
+      </button>
+
+      <button class="node" data-mode="audio">
+        <span class="shape triangle" aria-hidden="true"></span>
+        Аудиорезонанс
+      </button>
+
+      <button class="node" data-mode="text">
+        <span class="shape circle" aria-hidden="true"></span>
+        Текстовый вектор
+      </button>
+    </div>
+
+    <p>
+      387 → 1052 → ∞<br>
+      105.2 Гц — демотон, не телеметрия
+    </p>
+
+    <button id="diagnose">Локальный отчёт</button>
+
+    <p>
+      <a class="link" href="./mobile-check.html">
+        Мобильная диагностика
+      </a>
+    </p>
+
+    <p id="notice" role="status"></p>
+
+    <noscript>
+      Для интерактивных функций включите JavaScript.
+    </noscript>
+
+    <footer>
+      Master Sync 3.0.1 · Проверка Safari/iOS на устройстве не выполнена.
+      <br>
+      Выбранные файлы не отправляются этой страницей на сервер.
+    </footer>
+  </main>
+
+  <dialog id="modal" aria-labelledby="heading">
+    <h2 id="heading"></h2>
+
+    <div id="content"></div>
+
+    <div class="actions">
+      <button id="close" autofocus>Закрыть</button>
+    </div>
+  </dialog>
+
+  <script>
+    'use strict';
+
+    const REVISION = '3.0.1';
+
+    const modal = document.getElementById('modal');
+    const content = document.getElementById('content');
+    const heading = document.getElementById('heading');
+
+    let context = null;
+    let osc = null;
+    let gain = null;
+    let player = null;
+    let objectURL = null;
+    let generation = 0;
+    let previousFocus = null;
+
+    function stopTone() {
+      generation++;
+
+      const oldOsc = osc;
+      const oldGain = gain;
+      const oldContext = context;
+
+      osc = null;
+      gain = null;
+      context = null;
+
+      if (oldOsc) {
+        try {
+          oldOsc.stop();
+        } catch (_) {
+          // Осциллятор уже мог быть остановлен.
+        }
+
+        oldOsc.disconnect();
+      }
+
+      if (oldGain) {
+        oldGain.disconnect();
+      }
+
+      if (oldContext && oldContext.state !== 'closed') {
+        oldContext.close().catch(() => {});
+      }
+    }
+
+    function stopAll() {
+      stopTone();
+
+      if (player) {
+        player.pause();
+      }
+    }
+
+    function revoke() {
+      if (objectURL) {
+        URL.revokeObjectURL(objectURL);
+        objectURL = null;
+      }
+    }
+
+    function clean() {
+      stopAll();
+
+      if (player) {
+        player.removeAttribute('src');
+        player.load();
+        player = null;
+      }
+
+      revoke();
+    }
+
+    function el(tag, value, parent = content) {
+      const node = document.createElement(tag);
+
+      if (value) {
+        node.textContent = value;
+      }
+
+      parent.append(node);
+
+      return node;
+    }
+
+    function openPanel(title) {
+      if (typeof modal.showModal !== 'function') {
+        document.getElementById('notice').textContent =
+          'Диалог не поддерживается. Обновите браузер.';
+
+        return false;
+      }
+
+      clean();
+
+      previousFocus = document.activeElement;
+      heading.textContent = title;
+      content.replaceChildren();
+
+      if (!modal.open) {
+        modal.showModal();
+      }
+
+      return true;
+    }
+
+    function choose(label, accept, callback) {
+      const wrapper = el('label', label);
+      const input = el('input', '', wrapper);
+
+      input.type = 'file';
+      input.accept = accept;
+
+      input.addEventListener('change', () => {
+        const file = input.files && input.files[0];
+
+        if (file) {
+          callback(file);
+        }
+      });
+    }
+
+    function audioPanel() {
+      if (!openPanel('Аудиорезонанс')) {
+        return;
+      }
+
+      el(
+        'p',
+        'Начните с низкой громкости устройства. ' +
+        'При дискомфорте остановите звук.'
+      );
+
+      const status = el('p', 'Звук остановлен.');
+      status.setAttribute('role', 'status');
+
+      const label = el('label', 'Уровень демотона');
+      const volume = el('input', '', label);
+
+      volume.type = 'range';
+      volume.min = '0';
+      volume.max = '0.1';
+      volume.step = '0.005';
+      volume.value = '0.025';
+
+      volume.oninput = () => {
+        if (gain && context) {
+          gain.gain.setTargetAtTime(
+            Number(volume.value),
+            context.currentTime,
+            0.02
+          );
+        }
+      };
+
+      const controls = el('div');
+      controls.className = 'actions';
+
+      const start = el(
+        'button',
+        'Включить демотон',
+        controls
+      );
+
+      start.onclick = async () => {
+        stopAll();
+
+        const token = generation;
+
+        start.disabled = true;
+
+        try {
+          const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
+
+          if (!AudioContextClass) {
+            throw new Error('Web Audio недоступен');
+          }
+
+          const local = new AudioContextClass();
+
+          context = local;
+
+          await local.resume();
+
+          if (
+            token !== generation ||
+            context !== local ||
+            !modal.open
+          ) {
+            return;
+          }
+
+          if (local.state !== 'running') {
+            throw new Error(
+              'Браузер не разрешил запуск звука'
+            );
+          }
+
+          osc = local.createOscillator();
+          gain = local.createGain();
+
+          osc.frequency.value = 105.2;
+
+          gain.gain.setValueAtTime(
+            0,
+            local.currentTime
+          );
+
+          gain.gain.linearRampToValueAtTime(
+            Number(volume.value),
+            local.currentTime + 0.05
+          );
+
+          osc.connect(gain).connect(local.destination);
+          osc.start();
+
+          status.textContent =
+            'Демотон 105.2 Гц включён.';
+        } catch (error) {
+          if (token === generation) {
+            stopTone();
+
+            status.textContent =
+              'Ошибка: ' + error.message;
+          }
+        } finally {
+          start.disabled = false;
+        }
+      };
+
+      el(
+        'button',
+        'Остановить звук',
+        controls
+      ).onclick = () => {
+        stopAll();
+        status.textContent = 'Звук остановлен.';
+      };
+
+      const audio = el('audio');
+
+      player = audio;
+
+      audio.controls = true;
+      audio.preload = 'metadata';
+
+      audio.onplay = () => {
+        stopTone();
+
+        status.textContent =
+          'Воспроизводится локальный файл.';
+      };
+
+      audio.onpause = () => {
+        if (!osc) {
+          status.textContent =
+            'Воспроизведение приостановлено.';
+        }
+      };
+
+      audio.onended = () => {
+        status.textContent =
+          'Воспроизведение завершено.';
+      };
+
+      audio.onerror = () => {
+        if (audio.hasAttribute('src')) {
+          status.textContent =
+            'Не удалось прочитать аудио. Проверьте формат.';
+        }
+      };
+
+      choose(
+        'Выбрать аудиофайл',
+        'audio/*',
+        file => {
+          stopAll();
+
+          audio.removeAttribute('src');
+          audio.load();
+
+          revoke();
+
+          objectURL = URL.createObjectURL(file);
+          audio.src = objectURL;
+
+          status.textContent =
+            'Выбран: ' + file.name;
+        }
+      );
+    }
+
+    for (
+      const button of document.querySelectorAll('[data-mode]')
+    ) {
+      button.onclick = () => {
+        if (button.dataset.mode === 'audio') {
+          audioPanel();
+          return;
+        }
+
+        if (button.dataset.mode === 'visual') {
+          if (!openPanel('Визуальный код')) {
+            return;
+          }
+
+          const status = el(
+            'p',
+            'Выберите изображение.'
+          );
+
+          status.setAttribute('role', 'status');
+
+          const image = el('img');
+
+          image.alt = 'Выбранное изображение';
+          image.hidden = true;
+
+          image.onload = () => {
+            image.hidden = false;
+
+            status.textContent =
+              'Изображение загружено.';
+          };
+
+          image.onerror = () => {
+            image.hidden = true;
+
+            status.textContent =
+              'Не удалось прочитать изображение.';
+          };
+
+          choose(
+            'Изображение',
+            'image/*',
+            file => {
+              image.hidden = true;
+              image.removeAttribute('src');
+
+              revoke();
+
+              objectURL = URL.createObjectURL(file);
+              image.src = objectURL;
+
+              status.textContent =
+                'Загрузка: ' + file.name;
+            }
+          );
+        } else {
+          if (!openPanel('Текстовый вектор')) {
+            return;
+          }
+
+          el(
+            'p',
+            'Reality-1 — художественный мультимодальный ' +
+            'прототип Dream the Muse.'
+          );
+
+          el(
+            'p',
+            'Постоянный архив, авторизация, интеллектуальный ' +
+            'BGM и серверное восстановление не реализованы.'
+          );
+        }
+      };
+    }
+
+    document.getElementById('close').onclick = () => {
+      modal.close();
+    };
+
+    modal.addEventListener('close', () => {
+      clean();
+
+      if (
+        previousFocus &&
+        previousFocus.isConnected
+      ) {
+        previousFocus.focus();
+      }
+    });
+
+    modal.addEventListener('cancel', clean);
+
+    window.addEventListener('pagehide', clean);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopAll();
+      }
+    });
+
+    document.getElementById('diagnose').onclick = () => {
+      if (!openPanel('Локальный отчёт')) {
+        return;
+      }
+
+      el(
+        'p',
+        'Наличие API не подтверждает успешное воспроизведение. ' +
+        'Домен указан фактический, а не предполагаемый.'
+      );
+
+      el(
+        'pre',
+        JSON.stringify(
+          {
+            revision: REVISION,
+            host: location.host || 'local file',
+            protocol: location.protocol,
+            secure_context: window.isSecureContext,
+            web_audio_api_available: Boolean(
+              window.AudioContext ||
+              window.webkitAudioContext
+            ),
+            dialog_api_available:
+              typeof modal.showModal === 'function',
+            audio_playback_test: 'not performed'
+          },
+          null,
+          2
+        )
+      );
+    };
+  </script>
+</body>
+</html>
