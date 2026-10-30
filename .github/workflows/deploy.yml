@@ -1,73 +1,28 @@
-name: Deploy Reality-1 to GitHub Pages
+name: Validate Reality-1 static site
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
-concurrency:
-  group: github-pages
-  cancel-in-progress: false
 jobs:
-  prepare:
+  validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/configure-pages@v6.0.0
-      - name: Prepare complete static site
-        shell: bash
+      - name: Check static site and Vercel configuration
         run: |
-          set -euo pipefail
-          test -s index.html
           python3 - <<'PY'
+          import json
           from pathlib import Path
-          import shutil
-          root = Path.cwd()
-          target = root / '_site'
-          if target.exists():
-              shutil.rmtree(target)
-          target.mkdir()
-          excluded = {'_site', 'node_modules', 'vendor', '__pycache__', 'coverage', 'test', 'tests'}
-          extensions = {'.html', '.htm', '.css', '.js', '.mjs', '.svg', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.avif', '.ico', '.mp3', '.wav', '.ogg', '.m4a', '.aac', '.flac', '.mp4', '.webm', '.mov', '.woff', '.woff2', '.ttf', '.otf', '.vtt', '.webmanifest'}
-          count = 0
-          def copy_tree(folder):
-              global count
-              for source in folder.iterdir():
-                  if source.is_symlink() or source.name.startswith('.') or source.name in excluded:
-                      continue
-                  if source.is_dir():
-                      copy_tree(source)
-                  elif source.is_file():
-                      relative = source.relative_to(root)
-                      special = relative.as_posix() in {'CNAME', 'robots.txt', 'sitemap.xml'}
-                      if source.suffix.lower() not in extensions and not special:
-                          continue
-                      destination = target / relative
-                      destination.parent.mkdir(parents=True, exist_ok=True)
-                      shutil.copy2(source, destination)
-                      count += 1
-          copy_tree(root)
-          (target / '.nojekyll').touch()
-          if not (target / 'index.html').is_file():
-              raise SystemExit('Missing published index.html')
-          print(f'Prepared {count} static files plus .nojekyll')
+          for name in ('index.html', 'mobile-check.html'):
+              page = Path(name)
+              assert page.is_file() and page.stat().st_size > 0, f'Missing or empty: {name}'
+          config = json.loads(Path('vercel.json').read_text())
+          assert config.get('framework') is None, 'Expected static site framework'
+          assert config.get('buildCommand') == '', 'Expected no build command'
+          assert config.get('outputDirectory') == '.', 'Expected repository root output'
+          print('Static site configuration checks passed')
           PY
-          find _site -type f -print | sort
-      - uses: actions/upload-pages-artifact@v5.0.0
-        with:
-          path: _site
-          include-hidden-files: true
-  deploy:
-    needs: prepare
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/deploy-pages@v5.0.1
-        id: deployment
