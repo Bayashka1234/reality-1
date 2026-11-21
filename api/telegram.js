@@ -1,4 +1,4 @@
-import { timingSafeEqual } from 'node:crypto';
+﻿import { timingSafeEqual } from 'node:crypto';
 import { waitUntil } from '@vercel/functions';
 
 const AI_ENDPOINT = 'https://ai-gateway.vercel.sh/v1/chat/completions';
@@ -165,3 +165,4 @@ export function createHandler({ env = process.env, request = fetch, defer = wait
 }
 
 export default createHandler();
+

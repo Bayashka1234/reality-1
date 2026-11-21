@@ -1,4 +1,4 @@
-import { pathToFileURL } from 'node:url';
+﻿import { pathToFileURL } from 'node:url';
 
 // Run locally with secrets in .env.telegram; never print tokens, API URLs or
 // Telegram error bodies, which may contain credentials or private details.
@@ -43,7 +43,7 @@ export async function configureWebhook(env = process.env, request = fetch) {
 
   const bot = await telegram('getMe');
   if (bot?.username?.toLowerCase() !== 'dreamthemusedeploy1052_bot') {
-    throw new Error('This token does not belong to @DreamTheMuseDeploy1052_bot. Nothing was changed.');
+    throw new Error('This token does not belong to @MuseArchitect3871052_bot. Nothing was changed.');
   }
 
   const current = await telegram('getWebhookInfo');
@@ -82,7 +82,7 @@ export async function configureWebhook(env = process.env, request = fetch) {
   if (info.url !== url.href) {
     throw new Error('Webhook registration could not be confirmed. Check getWebhookInfo before retrying.');
   }
-  return 'Webhook registered for @DreamTheMuseDeploy1052_bot. Send /start in Telegram to verify replies. Delivery is not yet verified.';
+  return 'Webhook registered for @MuseArchitect3871052_bot. Send /start in Telegram to verify replies. Delivery is not yet verified.';
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
@@ -93,3 +93,4 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exitCode = 1;
   }
 }
+

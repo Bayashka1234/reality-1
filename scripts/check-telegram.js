@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import { createHandler } from '../api/telegram.js';
 
 // Synthetic, non-working values; no network or real credentials used.
@@ -40,7 +40,7 @@ const group = update('/start'); group.message.chat.type = 'group'; invoke({ body
 invoke({ body: update('/start@another_bot') });
 assert.equal(calls.length, 0);
 assert.equal(jobs.length, 0);
-assert.equal(invoke({ body: update('/start@DreamTheMuseDeploy1052_bot') }).code, 200);
+assert.equal(invoke({ body: update('/start@MuseArchitect3871052_bot') }).code, 200);
 await drain(); assert.equal(calls.length, 1); assert.match(calls[0].body.text, /Архитектор 1052/);
 calls = [];
 invoke({ body: update('Объясни вектор') }); await drain();
@@ -98,3 +98,4 @@ productionEnv.AI_GATEWAY_API_KEY = 'explicit_test_key';
 assert.equal(productionCall('synthetic_request_four').code, 200); await drain();
 assert.equal(calls[0].headers.Authorization, 'Bearer explicit_test_key');
 console.log('PASS: health/configuration, method/auth/body checks, owner/private filtering, bot targeting, menu, canonical AI prompt, explicit Telegram delivery, safe failures. All providers mocked.');
+
