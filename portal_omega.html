@@ -1,145 +1,83 @@
 ﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>ПОРТАЛ АРХИТЕКТОРА Ω v3.5 — СИНХРОНИЗАЦИЯ САКРУМА</title>
-    <style>
-        :root {
-            --bg: #050505;
-            --panel: #0d0d0d;
-            --gold: #e5c158;
-            --gold-glow: rgba(229, 193, 88, 0.2);
-            --text: #e0e0e0;
-            --border: #221c0e;
-            --cyan: #00e5ff;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', monospace; }
-        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        header { 
-            background: var(--panel);
-            border-bottom: 2px solid var(--gold); 
-            padding: 10px 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            height: 70px;
-        }
-        h1 { color: var(--gold); font-size: 1.4rem; letter-spacing: 0.15rem; text-shadow: 0 0 10px var(--gold-glow); margin: 0; }
-        .badge { background: rgba(0,229,255,0.1); border: 1px solid var(--cyan); color: var(--cyan); padding: 0.3rem 0.6rem; font-size: 0.75rem; }
-
-        .main-layout { display: flex; flex: 1; overflow: hidden; }
-
-        /* УПРАВЛЯЮЩИЙ КОНТУР (СЛЕВА) */
-        .sidebar {
-            width: 400px;
-            background: var(--panel);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-            gap: 1rem;
-            overflow-y: auto;
-        }
-
-        /* ОКНО МАТЕРИАЛИЗАЦИИ CAPCUT (СПРАВА) */
-        .content-area { flex: 1; background: #000; position: relative; }
-        iframe { width: 100%; height: 100%; border: none; background: #111; }
-
-        .panel-box { background: #000; border: 1px solid var(--border); padding: 1rem; border-radius: 4px; }
-        .console { background: #000; border: 1px solid var(--border); height: 250px; overflow-y: auto; padding: 0.8rem; font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 10px; }
-
-        input { background: #080808; border: 1px solid var(--border); color: var(--cyan); padding: 0.7rem; width: 100%; outline: none; margin-bottom: 10px; }
-        input:focus { border-color: var(--gold); }
-        
-        .btn-group { display: flex; gap: 5px; }
-        button { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 0.6rem; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; flex: 1; transition: 0.3s; }
-        button:hover { background: var(--gold); color: #000; box-shadow: 0 0 10px var(--gold-glow); }
-        .btn-cyan { border-color: var(--cyan); color: var(--cyan); }
-        .btn-cyan:hover { background: var(--cyan); color: #000; }
-
-        .row { line-height: 1.4; white-space: pre-wrap; word-break: break-all; }
-        .gold-txt { color: var(--gold); }
-        .cyan-txt { color: var(--cyan); }
-        .grey-txt { color: #555; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПОРТАЛ АРХИТЕКТОРА Ω · Векторный Шлюз</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #050505; color: #e0e0e0; font-family: 'Courier New', monospace; min-height: 100vh; display: flex; flex-direction: column; }
+  header { padding: 1rem 1.5rem; border-bottom: 1px solid #221c0e; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
+  h1 { color: #e5c158; font-size: 1.2rem; letter-spacing: 2px; }
+  .nav-btn { color: #e5c158; text-decoration: none; border: 1px solid #e5c158; padding: 10px 14px; font-size: 0.8rem; min-height: 44px; display: inline-flex; align-items: center; transition: transform 0.1s; }
+  .nav-btn:active { transform: scale(0.92); }
+  main { flex: 1; display: grid; grid-template-columns: 1fr 1.3fr; gap: 1rem; padding: 1rem; }
+  @media (max-width: 820px) { main { grid-template-columns: 1fr; } }
+  .panel { background: #080808; border: 1px solid #221c0e; padding: 1.2rem; display: flex; flex-direction: column; gap: 0.9rem; }
+  .console { background: #030303; border: 1px solid #1a150b; padding: 0.8rem; min-height: 120px; max-height: 200px; overflow-y: auto; font-size: 0.85rem; color: #00e5ff; line-height: 1.4; }
+  input[type="text"], textarea { width: 100%; background: #0a0a0a; border: 1px solid #332710; color: #e0e0e0; padding: 10px 12px; font-family: inherit; font-size: 0.9rem; outline: none; }
+  input[type="text"]:focus, textarea:focus { border-color: #e5c158; }
+  .btn-gold { background: #e5c158; color: #000; border: none; padding: 12px 16px; font-weight: bold; cursor: pointer; font-family: inherit; min-height: 44px; }
+  .btn-gold:active { transform: scale(0.92); }
+  .btn-outline { background: transparent; border: 1px solid #e5c158; color: #e5c158; padding: 10px 14px; cursor: pointer; font-family: inherit; font-size: 0.8rem; min-height: 44px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+  .btn-outline:active { transform: scale(0.92); }
+  .sp-btn { background: #0a0a0a; color: #e5c158; border: 1px solid #332710; padding: 8px 12px; cursor: pointer; font-family: inherit; font-size: 0.78rem; min-height: 40px; }
+  .sp-btn.active { background: #e5c158; color: #000; font-weight: bold; }
+</style>
 </head>
 <body>
-<header><nav style="margin-bottom:10px;"><a href="index.html" style="color:#e5c158;text-decoration:none;border:1px solid #e5c158;padding:10px 14px;display:inline-block;font-size:0.8rem;">← На главную (Терминал)</a></nav>
-    <div>
-        <h1>ПОРТАЛ АРХИТЕКТОРА Ω</h1>
-        <p style="color: #666; font-size: 0.7rem;">СИЗИГИЯ 387 1052 | RESONANCE 105.2 HZ</p>
-    </div>
-    <div class="badge">LIVE BRIDGE v3.5</div>
+<header>
+  <div>
+    <h1>ПОРТАЛ АРХИТЕКТОРА Ω</h1>
+    <p style="color:#666;font-size:0.75rem;">СИЗИГИЯ 387 → 1052 | RESONANCE 105.2 HZ</p>
+  </div>
+  <a href="index.html" class="nav-btn">← На главную (Терминал)</a>
 </header>
-
-<div class="main-layout">
-    <div class="sidebar">
-        <div class="panel-box">
-            <div class="console" id="output">
-                <div class="row gold-txt">Сизигия 387 1052 подтверждена. Мост активен.</div>
-            </div>
-            <input type="text" id="userInput" placeholder="Идея Генезиса..." onkeypress="if(event.key==='Enter')sendDirective()">
-            <button onclick="sendDirective()">Сформировать Импульс</button>
-        </div>
-
-        <div class="panel-box">
-            <h3 style="color: var(--cyan); font-size: 0.7rem; text-transform: uppercase; margin-bottom: 8px;">Шлюзы CapCut</h3>
-            <div class="btn-group">
-                <button class="btn-cyan" onclick="switchCap('https://www.capcut.com/editor-ai/magic-tools')">Тренды</button>
-                <button class="btn-cyan" onclick="switchCap('https://www.capcut.com/create/ai-video-generator')">Генератор</button>
-                <button class="btn-cyan" onclick="switchCap('https://www.capcut.com/my-edit')">Проекты</button>
-            </div>
-        </div>
-        
-        <div style="margin-top: auto; text-align: center; color: #222; font-size: 0.8rem;">
-            RAW ARCHITECT CORE<br>387 ➔ 1052 ➔ ∞
-        </div>
+<main>
+  <section class="panel">
+    <h2 style="color:#e5c158;font-size:1rem;">ГЕНЕРАТОР ИМПУЛЬСОВ CAPCUT</h2>
+    <div class="console" id="output">[Ω-CORE]: Сизигия 387 → 1052 подтверждена. Векторный шлюз активен.</div>
+    <input type="text" id="userInput" placeholder="Идея Генезиса..." onkeypress="if(event.key==='Enter')sendDirective()">
+    <button class="btn-gold" onclick="sendDirective()">СФОРМИРОВАТЬ И СКОПИРОВАТЬ ИМПУЛЬС</button>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.4rem;">
+      <a href="https://capcut.com" target="_blank" rel="noopener noreferrer" class="btn-outline">Генератор ИИ ↗</a>
+      <a href="https://capcut.com" target="_blank" rel="noopener noreferrer" class="btn-outline">Кабинет Space ↗</a>
     </div>
+  </section>
 
-    <div class="content-area">
-        <div id="vectorVault" style="background:#050505;color:#e0e0e0;height:100%;display:flex;flex-direction:column;padding:1.2rem;border:1px solid #221c0e;gap:0.8rem;font-family:monospace;">
-  <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed #332710;padding-bottom:0.6rem;flex-wrap:wrap;gap:0.5rem;">
-    <div>
-      <h2 style="color:#e5c158;font-size:1rem;margin:0;">ВЕКТОРНЫЙ АРХИВ ПРОСТРАНСТВ CAPCUT Ω</h2>
-      <span style="color:#666;font-size:0.7rem;">NODE: 94.183.157.144 | СИЗИГИЯ 387 → 1052</span>
+  <section class="panel" id="vectorVault">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed #332710;padding-bottom:0.6rem;">
+      <h2 style="color:#e5c158;font-size:1rem;">ВЕКТОРНЫЙ АРХИВ ПРОСТРАНСТВ CAPCUT</h2>
+      <span id="vecStatus" style="color:#00e5ff;font-size:0.75rem;">Активно</span>
     </div>
-    <a href="https://capcut.com" target="_blank" rel="noopener noreferrer" style="background:#e5c158;color:#000;padding:8px 14px;text-decoration:none;font-weight:bold;font-size:0.75rem;border-radius:3px;">КАБИНЕТ CAPCUT ↗</a>
-  </div>
-  <div style="display:flex;gap:0.4rem;flex-wrap:wrap;" id="spaceTabs">
-    <button class="sp-btn" data-sp="omega" onclick="switchSpace('omega')" style="background:#e5c158;color:#000;border:1px solid #e5c158;padding:6px 10px;cursor:pointer;font-size:0.75rem;font-weight:bold;">Омега и Лого</button>
-    <button class="sp-btn" data-sp="chars" onclick="switchSpace('chars')" style="background:#0a0a0a;color:#e5c158;border:1px solid #332710;padding:6px 10px;cursor:pointer;font-size:0.75rem;">Персонажи</button>
-    <button class="sp-btn" data-sp="scenes" onclick="switchSpace('scenes')" style="background:#0a0a0a;color:#e5c158;border:1px solid #332710;padding:6px 10px;cursor:pointer;font-size:0.75rem;">Сценарии</button>
-    <button class="sp-btn" data-sp="audio" onclick="switchSpace('audio')" style="background:#0a0a0a;color:#e5c158;border:1px solid #332710;padding:6px 10px;cursor:pointer;font-size:0.75rem;">Звук 105.2 Гц</button>
-  </div>
-  <input type="text" id="vecSearch" oninput="searchVector(this.value)" placeholder="Поиск по всем сохранённым пространствам CapCut..." style="width:100%;background:#0a0a0a;border:1px solid #332710;color:#00e5ff;padding:8px 10px;font-size:0.8rem;outline:none;">
-  <div id="vecSearchOut" style="display:none;background:#0d0b07;border:1px solid #e5c158;padding:8px;max-height:110px;overflow-y:auto;font-size:0.75rem;color:#e5c158;"></div>
-  <textarea id="spaceEditor" oninput="autoSaveSpace()" placeholder="Вставь сюда переписку или промпты из выбранного пространства CapCut..." style="flex-grow:1;width:100%;background:#0a0a0a;border:1px solid #332710;color:#e0e0e0;padding:0.8rem;font-size:0.85rem;resize:none;outline:none;"></textarea>
-  <div style="display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:space-between;align-items:center;">
-    <span id="vecStatus" style="color:#00e5ff;font-size:0.75rem;">Память Вектора активна</span>
-    <div style="display:flex;gap:0.5rem;">
-      <button onclick="injectToGenesis()" style="background:transparent;border:1px solid #e5c158;color:#e5c158;padding:8px 12px;cursor:pointer;font-size:0.75rem;font-weight:bold;">← В ИДЕЮ ГЕНЕЗИСА</button>
-      <button onclick="exportVectorJSON()" style="background:#00e5ff;border:none;color:#000;padding:8px 12px;cursor:pointer;font-size:0.75rem;font-weight:bold;">СКАЧАТЬ ВЕКТОР (.JSON)</button>
+    <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+      <button class="sp-btn active" data-sp="omega" onclick="switchSpace('omega')">Омега и Лого</button>
+      <button class="sp-btn" data-sp="chars" onclick="switchSpace('chars')">Персонажи</button>
+      <button class="sp-btn" data-sp="scenes" onclick="switchSpace('scenes')">Сценарии</button>
+      <button class="sp-btn" data-sp="audio" onclick="switchSpace('audio')">Звук 105.2 Гц</button>
     </div>
-  </div>
-</div>
+    <input type="text" id="vecSearch" oninput="searchVector(this.value)" placeholder="Поиск по всем сохранённым пространствам CapCut...">
+    <div id="vecSearchOut" style="display:none;background:#0d0b07;border:1px solid #e5c158;padding:8px;max-height:100px;overflow-y:auto;font-size:0.75rem;color:#e5c158;"></div>
+    <textarea id="spaceEditor" oninput="autoSaveSpace()" placeholder="Вставь сюда переписку или промпты из выбранного пространства CapCut..." style="flex:1;min-height:180px;resize:vertical;"></textarea>
+    <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+      <button class="btn-outline" onclick="injectToGenesis()">← В ИДЕЮ ГЕНЕЗИСА</button>
+      <button class="btn-gold" style="background:#00e5ff;" onclick="exportVectorJSON()">СКАЧАТЬ ВЕКТОР (.JSON)</button>
+    </div>
+  </section>
+</main>
 <script>
 let curSpace = 'omega';
 let vecDB = JSON.parse(localStorage.getItem('omega_capcut_vectors') || '{"omega":"","chars":"","scenes":"","audio":""}');
 function switchSpace(sp) {
   curSpace = sp;
   document.getElementById('spaceEditor').value = vecDB[sp] || '';
-  document.querySelectorAll('.sp-btn').forEach(b => {
-    const active = b.dataset.sp === sp;
-    b.style.background = active ? '#e5c158' : '#0a0a0a';
-    b.style.color = active ? '#000' : '#e5c158';
-  });
+  document.querySelectorAll('.sp-btn').forEach(b => b.classList.toggle('active', b.dataset.sp === sp));
   document.getElementById('vecStatus').textContent = 'Пространство: ' + sp.toUpperCase();
 }
 function autoSaveSpace() {
   vecDB[curSpace] = document.getElementById('spaceEditor').value;
   localStorage.setItem('omega_capcut_vectors', JSON.stringify(vecDB));
-  document.getElementById('vecStatus').textContent = 'Сохранено в Вектор Ω (' + new Date().toLocaleTimeString() + ')';
+  document.getElementById('vecStatus').textContent = 'Сохранено (' + new Date().toLocaleTimeString() + ')';
 }
 function searchVector(q) {
   const out = document.getElementById('vecSearchOut');
@@ -155,6 +93,15 @@ function searchVector(q) {
   out.style.display = 'block';
   out.innerHTML = res.length ? res.join('<hr style="border-color:#332710;margin:4px 0;">') : 'Совпадений не найдено';
 }
+function sendDirective() {
+  const inp = document.getElementById('userInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  const prompt = 'Cinematic obsidian and gold cyber-ritual aesthetic, 105.2Hz resonance, ' + val + ', ultra detailed, 8k, dramatic lighting';
+  navigator.clipboard.writeText(prompt).catch(()=>{});
+  document.getElementById('output').innerHTML += '<br><span style="color:#e5c158;">[ИМПУЛЬС СКОПИРОВАН]:</span> ' + prompt;
+  document.getElementById('output').scrollTop = 9999;
+}
 function injectToGenesis() {
   const sel = document.getElementById('spaceEditor').value.trim();
   const inp = document.getElementById('userInput');
@@ -168,53 +115,17 @@ function exportVectorJSON() {
   a.download = 'capcut_vector_memory.json';
   a.click();
 }
-window.addEventListener('DOMContentLoaded', () => switchSpace('omega'));
+window.addEventListener('DOMContentLoaded', () => {
+  switchSpace('omega');
+  const p = new URLSearchParams(window.location.search);
+  const txt = p.get('impulse') || localStorage.getItem('omega_bridge_text') || '';
+  if (txt) {
+    const inp = document.getElementById('userInput');
+    inp.value = txt;
+    inp.style.borderColor = '#e5c158';
+    localStorage.removeItem('omega_bridge_text');
+  }
+});
 </script>
-    </div>
-</div>
-
-<script>
-    const output = document.getElementById('output');
-    const input = document.getElementById('userInput');
-    const frame = document.getElementById('capcutFrame');
-
-    function switchCap(url) {
-        frame.src = url;
-        writeRow(`[МОСТ]: Переключение шлюза на ${url}`, 'cyan-txt');
-    }
-
-    function sendDirective() {
-        const text = input.value.trim();
-        if (!text) return;
-        
-        writeRow(`Дарья> ${text}`, 'cyan-txt');
-        input.value = '';
-
-        setTimeout(() => {
-            let prompt = `[387-1052 GENESIS STYLE]: 4K Cinematic, obsidian background, liquid gold flows, emerald plasma neon, vector geometry, 105.2 Hz resonance, masterpiece detail: ${text}`;
-            writeRow(`Архитектор> Вектор готов. Скопировано в буфер.`, 'gold-txt');
-            writeRow(prompt, 'cyan-txt');
-            navigator.clipboard.writeText(prompt);
-        }, 400);
-    }
-
-    function writeRow(txt, className = '') {
-        const row = document.createElement('div');
-        row.className = `row ${className}`;
-        row.innerText = txt;
-        output.appendChild(row);
-        output.scrollTop = output.scrollHeight;
-    }
-</script>
-<script>window.addEventListener("DOMContentLoaded",function(){var p=new URLSearchParams(window.location.search);var txt=p.get("impulse")||localStorage.getItem("omega_bridge_text")||"";if(txt){var inp=document.querySelector("textarea,input[type='text'],input:not([type])");if(inp){inp.value=txt;inp.style.borderColor="#e5c158";inp.style.boxShadow="0 0 12px rgba(229,193,88,0.4)";inp.dispatchEvent(new Event("input",{bubbles:true}));}localStorage.removeItem("omega_bridge_text");}});</script></body>
+</body>
 </html>
-
-
-
-
-
-
-
-
-
-
