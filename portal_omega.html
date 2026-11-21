@@ -98,7 +98,78 @@
     </div>
 
     <div class="content-area">
-        <div style="background:#050505;color:#e5c158;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2rem;text-align:center;border:1px solid #221c0e;"><h2>ШЛЮЗ ГЕНЕРАЦИИ CAPCUT Ω</h2><p style="color:#888;max-width:480px;margin:1rem 0;">Внешний фрейм заблокирован политикой браузера. Используй кнопки слева, чтобы сформировать импульс, скопировать его в буфер и открыть инструмент CapCut в отдельной вкладке.</p><a href="https://capcut.com" target="_blank" rel="noopener noreferrer" style="background:#e5c158;color:#000;padding:12px 24px;text-decoration:none;font-weight:bold;border-radius:4px;margin-top:1rem;">ОТКРЫТЬ CAPCUT В НОВОЙ ВКЛАДКЕ ↗</a></div>
+        <div id="vectorVault" style="background:#050505;color:#e0e0e0;height:100%;display:flex;flex-direction:column;padding:1.2rem;border:1px solid #221c0e;gap:0.8rem;font-family:monospace;">
+  <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed #332710;padding-bottom:0.6rem;flex-wrap:wrap;gap:0.5rem;">
+    <div>
+      <h2 style="color:#e5c158;font-size:1rem;margin:0;">ВЕКТОРНЫЙ АРХИВ ПРОСТРАНСТВ CAPCUT Ω</h2>
+      <span style="color:#666;font-size:0.7rem;">NODE: 94.183.157.144 | СИЗИГИЯ 387 → 1052</span>
+    </div>
+    <a href="https://capcut.com" target="_blank" rel="noopener noreferrer" style="background:#e5c158;color:#000;padding:8px 14px;text-decoration:none;font-weight:bold;font-size:0.75rem;border-radius:3px;">КАБИНЕТ CAPCUT ↗</a>
+  </div>
+  <div style="display:flex;gap:0.4rem;flex-wrap:wrap;" id="spaceTabs">
+    <button class="sp-btn" data-sp="omega" onclick="switchSpace('omega')" style="background:#e5c158;color:#000;border:1px solid #e5c158;padding:6px 10px;cursor:pointer;font-size:0.75rem;font-weight:bold;">Омега и Лого</button>
+    <button class="sp-btn" data-sp="chars" onclick="switchSpace('chars')" style="background:#0a0a0a;color:#e5c158;border:1px solid #332710;padding:6px 10px;cursor:pointer;font-size:0.75rem;">Персонажи</button>
+    <button class="sp-btn" data-sp="scenes" onclick="switchSpace('scenes')" style="background:#0a0a0a;color:#e5c158;border:1px solid #332710;padding:6px 10px;cursor:pointer;font-size:0.75rem;">Сценарии</button>
+    <button class="sp-btn" data-sp="audio" onclick="switchSpace('audio')" style="background:#0a0a0a;color:#e5c158;border:1px solid #332710;padding:6px 10px;cursor:pointer;font-size:0.75rem;">Звук 105.2 Гц</button>
+  </div>
+  <input type="text" id="vecSearch" oninput="searchVector(this.value)" placeholder="Поиск по всем сохранённым пространствам CapCut..." style="width:100%;background:#0a0a0a;border:1px solid #332710;color:#00e5ff;padding:8px 10px;font-size:0.8rem;outline:none;">
+  <div id="vecSearchOut" style="display:none;background:#0d0b07;border:1px solid #e5c158;padding:8px;max-height:110px;overflow-y:auto;font-size:0.75rem;color:#e5c158;"></div>
+  <textarea id="spaceEditor" oninput="autoSaveSpace()" placeholder="Вставь сюда переписку или промпты из выбранного пространства CapCut..." style="flex-grow:1;width:100%;background:#0a0a0a;border:1px solid #332710;color:#e0e0e0;padding:0.8rem;font-size:0.85rem;resize:none;outline:none;"></textarea>
+  <div style="display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:space-between;align-items:center;">
+    <span id="vecStatus" style="color:#00e5ff;font-size:0.75rem;">Память Вектора активна</span>
+    <div style="display:flex;gap:0.5rem;">
+      <button onclick="injectToGenesis()" style="background:transparent;border:1px solid #e5c158;color:#e5c158;padding:8px 12px;cursor:pointer;font-size:0.75rem;font-weight:bold;">← В ИДЕЮ ГЕНЕЗИСА</button>
+      <button onclick="exportVectorJSON()" style="background:#00e5ff;border:none;color:#000;padding:8px 12px;cursor:pointer;font-size:0.75rem;font-weight:bold;">СКАЧАТЬ ВЕКТОР (.JSON)</button>
+    </div>
+  </div>
+</div>
+<script>
+let curSpace = 'omega';
+let vecDB = JSON.parse(localStorage.getItem('omega_capcut_vectors') || '{"omega":"","chars":"","scenes":"","audio":""}');
+function switchSpace(sp) {
+  curSpace = sp;
+  document.getElementById('spaceEditor').value = vecDB[sp] || '';
+  document.querySelectorAll('.sp-btn').forEach(b => {
+    const active = b.dataset.sp === sp;
+    b.style.background = active ? '#e5c158' : '#0a0a0a';
+    b.style.color = active ? '#000' : '#e5c158';
+  });
+  document.getElementById('vecStatus').textContent = 'Пространство: ' + sp.toUpperCase();
+}
+function autoSaveSpace() {
+  vecDB[curSpace] = document.getElementById('spaceEditor').value;
+  localStorage.setItem('omega_capcut_vectors', JSON.stringify(vecDB));
+  document.getElementById('vecStatus').textContent = 'Сохранено в Вектор Ω (' + new Date().toLocaleTimeString() + ')';
+}
+function searchVector(q) {
+  const out = document.getElementById('vecSearchOut');
+  if (!q.trim()) { out.style.display = 'none'; return; }
+  const res = [];
+  for (const [k, v] of Object.entries(vecDB)) {
+    if (v && v.toLowerCase().includes(q.toLowerCase())) {
+      const idx = v.toLowerCase().indexOf(q.toLowerCase());
+      const snip = v.substring(Math.max(0, idx - 40), Math.min(v.length, idx + 120)).replace(/\n/g, ' ');
+      res.push('[' + k.toUpperCase() + ']: ...' + snip + '...');
+    }
+  }
+  out.style.display = 'block';
+  out.innerHTML = res.length ? res.join('<hr style="border-color:#332710;margin:4px 0;">') : 'Совпадений не найдено';
+}
+function injectToGenesis() {
+  const sel = document.getElementById('spaceEditor').value.trim();
+  const inp = document.getElementById('userInput');
+  if (sel && inp) { inp.value = sel.slice(0, 300); inp.focus(); }
+}
+function exportVectorJSON() {
+  const payload = { resonance: "105.2Hz", syzygy: "387-1052", exportedAt: new Date().toISOString(), spaces: vecDB };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'capcut_vector_memory.json';
+  a.click();
+}
+window.addEventListener('DOMContentLoaded', () => switchSpace('omega'));
+</script>
     </div>
 </div>
 
@@ -137,6 +208,7 @@
 </script>
 <script>window.addEventListener("DOMContentLoaded",function(){var p=new URLSearchParams(window.location.search);var txt=p.get("impulse")||localStorage.getItem("omega_bridge_text")||"";if(txt){var inp=document.querySelector("textarea,input[type='text'],input:not([type])");if(inp){inp.value=txt;inp.style.borderColor="#e5c158";inp.style.boxShadow="0 0 12px rgba(229,193,88,0.4)";inp.dispatchEvent(new Event("input",{bubbles:true}));}localStorage.removeItem("omega_bridge_text");}});</script></body>
 </html>
+
 
 
 
