@@ -1,4 +1,4 @@
-# Dream the Muse — облачный Архитектор 1052
+﻿# Dream the Muse — облачный Архитектор 1052
 
 Проект Vercel: **dreammuse.art-api**. Репозиторий: Bayashka1234/Dreammuse.art,
 ветка main. Root Directory должен быть корнем репозитория (пустое значение),
@@ -11,7 +11,7 @@ Production endpoint: `https://dreammuseart-api.vercel.app/api/telegram`.
 Выберите проект в Vercel → **Environment Variables** в боковой панели.
 Введите значения, выберите **Production**, сохраните:
 
-- `TELEGRAM_BOT_TOKEN`: НОВЫЙ токен @DreamTheMuseDeploy1052_bot. Если старый
+- `TELEGRAM_BOT_TOKEN`: НОВЫЙ токен @MuseArchitect3871052_bot. Если старый
   публиковался, сначала отзовите его через BotFather. Не использовать старый.
 - `AI_GATEWAY_API_KEY`: ключ Vercel AI Gateway (тип Secret). Альтернатива на Vercel — автоматически переданный в каждом вызове заголовок `x-vercel-oidc-token`; не копировать его вручную. `VERCEL_OIDC_TOKEN` используется только локально, после `vercel env pull`. Явно заданный API-ключ имеет приоритет, даже если он неверен.
 - `TELEGRAM_WEBHOOK_SECRET`: случайный секрет из менеджера паролей,
@@ -74,3 +74,4 @@ Telegram использует только AI Gateway; старые `OPENROUTER_
 API совместимости: https://vercel.com/docs/ai-gateway/sdks-and-apis/openai-chat-completions
 
 OIDC читается внутри обработчика на каждом вызове. На Vercel (системная переменная `VERCEL=1`) статический `VERCEL_OIDC_TOKEN` не является резервным маршрутом: без актуального заголовка или явного API-ключа конфигурация не готова. Не сохраняйте токены между запросами и не выводите заголовки в логи. GET проверяет формат доступной конфигурации, не валидность OIDC или баланс.
+
