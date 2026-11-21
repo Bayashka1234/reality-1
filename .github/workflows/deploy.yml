@@ -25,7 +25,7 @@ jobs:
     steps:
       # Исправлено с @v6 на стабильную версию @v4, чтобы избежать ошибки разрешения тега
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Check static site files, capcut_vectors.json and Vercel config
         run: |
@@ -64,7 +64,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
