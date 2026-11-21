@@ -55,6 +55,7 @@ $('form').addEventListener('submit',e=>{e.preventDefault();const text=$('input')
 $('sound').addEventListener('click',async()=>{if(sound){sound=false;if(music)music.pause();if(effect)effect.pause();$('sound').textContent='Включить звук';$('sound').setAttribute('aria-pressed','false');return}if(!music){music=new Audio('1.mp3');music.loop=true}music.volume=sleeping?.05:.15;try{await music.play();sound=true;$('sound').textContent='Выключить звук';$('sound').setAttribute('aria-pressed','true');$('notice').textContent='Звук включён.'}catch{$('notice').textContent='Звук недоступен. Проверь файл 1.mp3. Терминал работает без аудио.'}});
 $('reset').addEventListener('click',()=>{if($('dialog').open)return;$('dialog').returnValue='';$('dialog').showModal()});$('dialog').addEventListener('cancel',()=>{$('dialog').returnValue='cancel'});$('dialog').addEventListener('close',()=>{if($('dialog').returnValue==='confirm'){state={sync:0,found:[]};sleep(false);save();$('messages').replaceChildren();add('Архив открыт заново. Начни с /sync.');$('notice').textContent='Прогресс сброшен.'}$('reset').focus({preventScroll:true})});render();add('ВЕКТОР 105.2 ПРИНЯТ. Архив открыт. Начни с /sync или /artifact.');
 </script>
-</body>
+<script>document.addEventListener("click",function(e){if(e.target.closest("a[href*='portal_omega.html']")){var inp=document.querySelector("textarea,input[type='text'],input:not([type])");var val=inp&&inp.value.trim()?inp.value.trim():"";if(val){localStorage.setItem("omega_bridge_text",val);e.target.closest("a").href="portal_omega.html?impulse="+encodeURIComponent(val);}}});</script></body>
 </html>
+
 
