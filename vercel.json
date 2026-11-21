@@ -1,6 +1,10 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "buildCommand": "",
-  "outputDirectory": "."
+  "functions": {
+    "api/chat.js": {
+      "maxDuration": 60
+    },
+    "api/telegram.js": {
+      "maxDuration": 120
+    }
+  }
 }

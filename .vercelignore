@@ -1,0 +1,8 @@
+# Example files should not be deployed
+*.example
+speed-insights.config.md
+.env*
+scripts/setup-telegram.js
+TELEGRAM.md
+
+scripts/check-telegram.js
