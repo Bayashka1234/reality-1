@@ -122,7 +122,7 @@ export default async function handler(req, res) {
     ALLOWED_ORIGINS,
   } = process.env;
 
-  const allowedOrigins = ((ALLOWED_ORIGINS || '') + ',https://github.io,https://dreamthemuse.website')
+  const allowedOrigins = ((ALLOWED_ORIGINS || '') + ',https://bayashka1234.github.io,https://dreamthemuse.website')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
@@ -347,4 +347,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
 
