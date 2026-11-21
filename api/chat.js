@@ -1,4 +1,4 @@
-import { timingSafeEqual } from 'node:crypto';
+﻿import { timingSafeEqual } from 'node:crypto';
 
 const OPENROUTER_URL =
   'https://openrouter.ai/api/v1/chat/completions';
@@ -122,7 +122,7 @@ export default async function handler(req, res) {
     ALLOWED_ORIGINS,
   } = process.env;
 
-  const allowedOrigins = (ALLOWED_ORIGINS || '')
+  const allowedOrigins = ((ALLOWED_ORIGINS || '') + ',https://github.io,https://dreamthemuse.website')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
@@ -347,3 +347,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
