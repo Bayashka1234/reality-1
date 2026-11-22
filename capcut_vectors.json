@@ -1,16 +1,23 @@
 [
-    {
-        "id":  1795320001,
-        "chat":  "387 1052",
-        "tag":  "PROMPT_ENG",
-        "content":  "[GPT Image 2] Cinematic obsidian and gold cyber-ritual aesthetic, 105.2Hz resonance, Syzygy 387 to 1052 eclipse portal with liquid gold geometry, ultra detailed, 8k, dramatic lighting",
-        "time":  "22.11, 13:06"
-    },
-    {
-        "id":  1795320002,
-        "chat":  "387 1052",
-        "tag":  "PROMPT_ENG",
-        "content":  "[Dreamina Seedance 2.5] Slow hypnotic camera push into dark obsidian chamber, golden frequency rings vibrating at 105.2Hz, volumetric chiaroscuro, 60fps",
-        "time":  "22.11, 13:06"
-    }
+  {
+    "id": 105201,
+    "chat": "vector 387 1052",
+    "tag": "PROMPT_ENG",
+    "content": "[INIT · 387 1052 | MODEL: GPT Image 2] Cinematic obsidian and gold cyber-ritual aesthetic, 105.2Hz resonance, Syzygy 387 to 1052 eclipse portal with liquid gold geometry, ultra detailed, 8k, dramatic lighting",
+    "time": "22.11, 02:07"
+  },
+  {
+    "id": 105202,
+    "chat": "vector 387 1052",
+    "tag": "PROMPT_ENG",
+    "content": "[VIDEO · 387 1052 | MODEL: Dreamina Seedance 2.5] Slow hypnotic camera push into dark obsidian chamber, golden frequency rings vibrating at 105.2Hz, volumetric chiaroscuro, 60fps",
+    "time": "22.11, 02:07"
+  },
+  {
+    "id": 105203,
+    "chat": "vector 387 1052",
+    "tag": "CHRONICLE_RU",
+    "content": "АРХЕТИП ОМЕГА · REALITY-1: Траектория 387 → 1052. Артефакты: Golden Dust, Паспорт знания, Crystal Cathedral, Anchor Core 44.1 Hz / 105.2 Hz.",
+    "time": "22.11, 02:07"
+  }
 ]
