@@ -151,12 +151,21 @@ export function createHandler({ env = process.env, request = fetch, defer = wait
     }
     const text = typeof message.text === 'string' ? message.text.trim() : '';
     const commandTarget = /^\/[^\s@]+@([^\s]+)/.exec(text)?.[1];
-    if (commandTarget && commandTarget.toLowerCase() !== 'dreamthemusedeploy1052_bot') {
+    if (commandTarget && commandTarget.toLowerCase() !== 'musearchitect3871052_bot' && commandTarget.toLowerCase() !== 'dreamthemusedeploy1052_bot') {
       return res.status(200).json({ ok: true });
     }
     if (!text || text.length > 6000) {
       defer(send(config, config.owner, 'Пришлите текст от 1 до 6000 символов.').catch(() => console.warn('telegram_bot: delivery_failed')));
     } else {
+            if (/^\/(capcut|trends)(@\w+)?(\s|$)/i.test(text)) {
+        defer((async () => {
+          const rep = await _fetchCapcutVectorsReport();
+          for (let i = 0; i < rep.length; i += 4000) {
+            await send(config, config.owner, rep.slice(i, i + 4000));
+          }
+        })().catch(() => console.warn('telegram_bot: capcut_delivery_failed')));
+        return res.status(200).json({ ok: true });
+      }
       defer(processMessage(config, config.owner, text));
     }
     // ACK promptly. waitUntil is best-effort, not a durable queue or exactly-once delivery.
@@ -164,5 +173,36 @@ export function createHandler({ env = process.env, request = fetch, defer = wait
   };
 }
 
+async function _fetchCapcutVectorsReport() {
+  const url = 'https://githubusercontent.com' + Date.now();
+  const header =
+    '⚡ ВОССТАНОВЛЕННЫЙ ЧАТ CAPCUT · ТРЕНДЫ ИИ\n' +
+    'Тема: 387 → 1052 | CapCut ID: id0184534066\n' +
+    'Портал Ω: https://bayashka1234.github.io/reality-1/portal_omega.html\n' +
+    '────────────────────\n';
+  try {
+    const r = await fetch(url);
+    if (!r.ok) return header + 'Архив временно недоступен (HTTP ' + r.status + ').';
+    const raw = await r.json();
+    const list = Array.isArray(raw) ? raw : (Array.isArray(raw.vectors) ? raw.vectors : []);
+    if (!list.length) return header + 'Архив векторов пуст.';
+    const totalChats = list.filter(x => Array.isArray(x.dialogue) && x.dialogue.length > 0).length;
+    const lines = [header + 'Всего векторов: ' + list.length + ' | С диалогами: ' + totalChats];
+    list.slice(0, 10).forEach((item, idx) => {
+      let block = '#' + (idx + 1) + ' [' + (item.tag || 'VECTOR') + '] · ' + (item.time || '—') + '\n' + String(item.content || '').trim();
+      if (Array.isArray(item.dialogue) && item.dialogue.length > 0) {
+        const lastMsgs = item.dialogue.slice(-2).map(m =>
+          '  • ' + (m.role === 'user' ? 'АРХИТЕКТОР' : 'ВЕКТОР Ω') + ': ' + String(m.text || '').replace(/\s+/g, ' ').slice(0, 120)
+        );
+        block += '\n💬 Диалог (' + item.dialogue.length + '):\n' + lastMsgs.join('\n');
+      }
+      lines.push(block);
+    });
+    return lines.join('\n\n');
+  } catch (e) {
+    return header + 'Ошибка загрузки архива: ' + e.message;
+  }
+}
 export default createHandler();
+
 
