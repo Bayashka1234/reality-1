@@ -1,10 +1,210 @@
-﻿# 1. Скопируйте код из Раздела 1 в буфер обмена и выполните:
-Get-Clipboard | Set-Content -Path "D:\Projects\reality-1\portal_omega.html" -Encoding UTF8
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПОРТАЛ АРХИТЕКТОРА Ω v4.1 — МОСТ CAPCUT</title>
+<style>
+  :root {
+    --bg: #050505; --panel: #0c0c0c; --gold: #e5c158; --gold-dim: #8c7228;
+    --cyan: #00e5ff; --text: #e6e6e6; --muted: #777; --border: #261f0d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Consolas', 'Courier New', monospace; }
+  body { background: var(--bg); color: var(--text); padding: 1.5rem 1rem; display: flex; justify-content: center; }
+  .wrap { width: 100%; max-width: 980px; display: flex; flex-direction: column; gap: 1.2rem; }
+  header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; flex-wrap: wrap; gap: 0.8rem; }
+  h1 { color: var(--gold); font-size: 1.25rem; letter-spacing: 0.14rem; text-transform: uppercase; }
+  .sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+  .badge { border: 1px solid var(--cyan); color: var(--cyan); padding: 0.35rem 0.7rem; font-size: 0.75rem; background: rgba(0,229,255,0.08); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--border); padding: 1.2rem; border-radius: 4px; display: flex; flex-direction: column; gap: 0.9rem; }
+  .card-title { color: var(--gold); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.08rem; border-bottom: 1px dashed #2e240e; padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+  textarea, input[type="text"] { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 0.75rem; font-size: 0.85rem; outline: none; border-radius: 2px; }
+  textarea { min-height: 180px; resize: vertical; line-height: 1.45; }
+  textarea:focus, input[type="text"]:focus { border-color: var(--gold); }
+  .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  button, a.btn {
+    min-height: 44px; padding: 0.6rem 1rem; border: 1px solid var(--gold); background: transparent; color: var(--gold);
+    font-weight: bold; font-size: 0.8rem; text-transform: uppercase; cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center; transition: transform 0.12s ease, background 0.15s ease;
+  }
+  button:hover, a.btn:hover { background: var(--gold); color: #000; }
+  button:active, a.btn:active { transform: scale(0.92); }
+  button.cyan { border-color: var(--cyan); color: var(--cyan); }
+  button.cyan:hover { background: var(--cyan); color: #000; }
+  button.danger { border-color: #662222; color: #cc5555; }
+  button.danger:hover { background: #cc5555; color: #000; }
+  .vault-list { max-height: 360px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; padding-right: 4px; }
+  .item { background: #000; border: 1px solid #1f190a; padding: 0.85rem; border-radius: 3px; display: flex; flex-direction: column; gap: 0.45rem; }
+  .item-head { display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; }
+  .tag { padding: 2px 6px; border-radius: 2px; font-weight: bold; }
+  .tag-eng { background: rgba(0,229,255,0.12); color: var(--cyan); border: 1px solid rgba(0,229,255,0.4); }
+  .tag-ru { background: rgba(229,193,88,0.12); color: var(--gold); border: 1px solid rgba(229,193,88,0.4); }
+  .item-body { font-size: 0.82rem; line-height: 1.45; white-space: pre-wrap; color: #ddd; word-break: break-word; }
+  .copy-mini { min-height: 32px; padding: 4px 10px; font-size: 0.7rem; align-self: flex-end; }
+  .status { font-size: 0.78rem; color: var(--cyan); min-height: 1.1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Портал Архитектора Ω // Мост CapCut</h1>
+      <div class="sub">КАНАЛ: VECTOR 387 1052 | СИЗИГИЯ 105.2 ГЦ | D:\PROJECTS\REALITY-1</div>
+    </div>
+    <div class="badge">v4.1 BRIDGE ACTIVE</div>
+  </header>
 
-# 2. Обновляем на GitHub и открываем локально
-Set-Location "D:\Projects\reality-1"
-git add portal_omega.html
-git commit -m "Update portal_omega.html to v4.3"
-git push origin main
-Start-Process "http://localhost:8080/portal_omega.html?v=4.3"
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">
+        <span>1. Шлюз импорта (Тренды ИИ)</span>
+        <a class="btn" href="https://capcut.com" target="_blank" rel="noopener noreferrer" style="min-height:34px;padding:4px 10px;font-size:0.72rem;">CapCut Web ↗</a>
+      </div>
+      <p style="font-size:0.78rem;color:#999;line-height:1.4;">
+        Скопируй переписку из чата <b>vector 387 1052</b> в CapCut (через телефон/Telegram или веб-версию) и вставь сюда. Разделяй блоки пустой строкой.
+      </p>
+      <textarea id="rawInput" placeholder="Вставь сюда текст переписки из CapCut (Ctrl + V)..."></textarea>
+      <div class="btn-row">
+        <button onclick="importVectors()">Извлечь векторы в Архив</button>
+        <button class="cyan" onclick="exportJSON()">Скачать JSON для GitHub</button>
+      </div>
+      <div class="status" id="statusMsg">Готов к приёму импульса из CapCut...</div>
+    </div>
 
+    <div class="card">
+      <div class="card-title">
+        <span>2. Архив: vector 387 1052 (<span id="count">0</span>)</span>
+        <button class="danger" onclick="clearVault()" style="min-height:32px;padding:4px 8px;font-size:0.7rem;">Очистить</button>
+      </div>
+      <input type="text" id="searchBox" oninput="renderVault()" placeholder="Поиск по промптам, тегам или смыслу...">
+      <div class="vault-list" id="vaultList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'omega_capcut_vector_387_1052';
+  let archive = [];
+
+  try {
+    archive = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch (e) {
+    archive = [];
+  }
+
+  function setStatus(msg) {
+    document.getElementById('statusMsg').textContent = msg;
+  }
+
+  function importVectors() {
+    const raw = document.getElementById('rawInput').value.trim();
+    if (!raw) {
+      setStatus('Поле пустое — сначала вставь текст из переписки CapCut.');
+      return;
+    }
+    const blocks = raw.split(/\n\s*\n/).map(b => b.trim()).filter(b => b.length > 3);
+    const now = new Date().toLocaleString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    blocks.forEach(text => {
+      const isEng = /[a-zA-Z]{4,}/.test(text);
+      archive.unshift({
+        id: Date.now() + Math.random(),
+        chat: 'vector 387 1052',
+        tag: isEng ? 'PROMPT_ENG' : 'CHRONICLE_RU',
+        content: text,
+        time: now
+      });
+    });
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(archive));
+    document.getElementById('rawInput').value = '';
+    setStatus(`Успешно извлечено векторов: ${blocks.length}. Сохранено в ядре Портала.`);
+    renderVault();
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+
+  function copyText(idx) {
+    const text = archive[idx]?.content;
+    if (!text) return;
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text)
+        .then(() => setStatus('Вектор скопирован в буфер обмена Windows.'))
+        .catch(() => {
+          fallbackCopy(text);
+          setStatus('Вектор скопирован в буфер обмена (резервный режим).');
+        });
+    } else {
+      fallbackCopy(text);
+      setStatus('Вектор скопирован в буфер обмена Windows.');
+    }
+  }
+
+  function exportJSON() {
+    if (!archive.length) {
+      setStatus('Архив пуст — нечего выгружать.');
+      return;
+    }
+    const blob = new Blob([JSON.stringify(archive, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'capcut_vectors.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus('Файл capcut_vectors.json скачан. Перенеси его в D:\\Projects\\reality-1 для git push.');
+  }
+
+  function clearVault() {
+    if (confirm('Очистить локальный архив vector 387 1052 в этом браузере?')) {
+      archive = [];
+      localStorage.removeItem(STORAGE_KEY);
+      renderVault();
+      setStatus('Архив очищен.');
+    }
+  }
+
+  function renderVault() {
+    const q = document.getElementById('searchBox').value.toLowerCase();
+    const list = document.getElementById('vaultList');
+    document.getElementById('count').textContent = archive.length;
+    list.innerHTML = '';
+
+    archive.forEach((item, index) => {
+      if (q && !item.content.toLowerCase().includes(q) && !item.tag.toLowerCase().includes(q)) return;
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `
+        <div class="item-head">
+          <span class="tag ${item.tag === 'PROMPT_ENG' ? 'tag-eng' : 'tag-ru'}">${item.tag}</span>
+          <span style="color:#666;">${item.time}</span>
+        </div>
+        <div class="item-body"></div>
+        <button class="copy-mini" onclick="copyText(${index})">Копировать вектор</button>
+      `;
+      div.querySelector('.item-body').textContent = item.content;
+      list.appendChild(div);
+    });
+  }
+
+  renderVault();
+</script>
+</body>
+</html>
