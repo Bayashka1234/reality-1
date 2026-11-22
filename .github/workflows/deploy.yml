@@ -25,7 +25,7 @@ jobs:
       - name: Prepare static site bundle
         run: |
           mkdir -p _site
-          for file in index.html portal_omega.html mobile-check.html telegram-mini-graph.html capcut_vectors.json; do
+          for file in index.html portal_omega.html privacy.html mobile-check.html telegram-mini-graph.html capcut_vectors.json; do
             if [ -f "$file" ]; then cp "$file" _site/; fi
           done
           for dir in assets audio images docs public pages Bay; do
@@ -51,3 +51,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
