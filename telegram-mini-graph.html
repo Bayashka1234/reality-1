@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101018"><title>Reality-1 · Мини-Граф</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101018;color:#eee}*{box-sizing:border-box}body{margin:0;padding:24px 18px;min-height:100vh;display:grid;place-items:center}main{width:min(100%,520px)}small{color:#d8ac65;letter-spacing:3px}h1{font-size:30px}p{color:#b8b8c8;line-height:1.6}svg{width:100%;height:260px;background:#171722;border:1px solid #343040;border-radius:24px}.edge{stroke:#755932;stroke-width:2}.node{fill:#e5ad51}.label{fill:#eae4da;font-size:15px;text-anchor:middle}.core{transform-origin:250px 130px;transition:transform .12s,opacity .12s}.beat .core{transform:scale(1.16);opacity:.65}button{width:100%;padding:18px;border:0;border-radius:16px;background:#e7ae50;color:#201606;font-weight:800;font-size:16px;cursor:pointer}button:focus-visible{outline:3px solid white;outline-offset:4px}#status{min-height:52px}pre{white-space:pre-wrap;font-size:12px;color:#9ba1b8;background:#171722;padding:16px;border-radius:12px}.note{font-size:13px}@media(prefers-reduced-motion:reduce){.core{transition:none}.beat .core{transform:none}}
+</style></head><body><main><small>DREAM THE MUSE</small><h1>Сверх-резонанс</h1><p>387 → 1052 → ∞ · 122 BPM</p>
+<svg viewBox="0 0 500 260" role="img" aria-label="Граф: узлы 387, 1052 и бесконечность"><path class="edge" d="M90 180L250 130L410 70M90 180L410 70"/><g class="core"><circle class="node" cx="250" cy="130" r="30"/></g><circle class="node" cx="90" cy="180" r="14"/><circle class="node" cx="410" cy="70" r="14"/><text class="label" x="90" y="217">387</text><text class="label" x="250" y="188">1052</text><text class="label" x="410" y="110">∞</text></svg>
+<p id="status" role="status" aria-live="polite">Критическая стабильность. Пульсация выключена.</p><button id="toggle" type="button" aria-pressed="false">СИНХРОНИЗАЦИЯ</button><p class="note" id="support"></p><p class="note">Запуск только с вашего согласия. Автостоп через 60 секунд, при скрытии страницы или сворачивании приложения. Точность темпа и отклик зависят от устройства и Telegram.</p><pre id="log">deploy_log: NOT_VERIFIED
+session: IDLE</pre>
+</main><script>
+'use strict';
+const tg=window.Telegram?.WebApp;
+let supported=false;
+try{if(tg){tg.ready();tg.expand();supported=Boolean(tg.initData && tg.isVersionAtLeast('6.1') && tg.HapticFeedback?.impactOccurred);}}catch(e){}
+const button=document.getElementById('toggle'),statusEl=document.getElementById('status'),log=document.getElementById('log');
+document.getElementById('support').textContent=supported?'API тактильного отклика доступен. Физическую вибрацию проверяйте на устройстве.':'Визуальное демо. Для тактильного отклика откройте страницу как Mini App в Telegram на поддерживаемом устройстве.';
+const period=60000/122;
+let active=false,timer=null,limit=null,flash=null,next=0,count=0;
+function stop(reason='Остановлено пользователем'){
+active=false;clearTimeout(timer);clearTimeout(limit);clearTimeout(flash);document.body.classList.remove('beat');button.textContent='СИНХРОНИЗАЦИЯ';button.setAttribute('aria-pressed','false');statusEl.textContent='Критическая стабильность. '+reason+'.';log.textContent='deploy_log: NOT_VERIFIED\nsession: STOPPED\nreason: '+reason;
+}
+function tick(){
+if(!active)return;
+if(document.hidden){stop('Страница скрыта');return;}
+count++;
+if(supported){try{tg.HapticFeedback.impactOccurred('light');}catch(e){stop('Ошибка API тактильного отклика');return;}}
+document.body.classList.add('beat');clearTimeout(flash);flash=setTimeout(()=>document.body.classList.remove('beat'),110);
+log.textContent='deploy_log: NOT_VERIFIED\nsession: SUPER_RESONANCE_ENGAGED\ntarget_bpm: 122\npulses_requested: '+count+'\nhaptics: '+(supported?'REQUESTED_NOT_VERIFIED':'VISUAL_ONLY');
+next+=period;if(next<performance.now())next=performance.now()+period;
+timer=setTimeout(tick,Math.max(0,next-performance.now()));
+}
+function start(){if(active||document.hidden)return;active=true;count=0;button.textContent='ОСТАНОВИТЬ';button.setAttribute('aria-pressed','true');statusEl.textContent=supported?'Пульсация активна · целевой темп 122 BPM':'Визуальная пульсация · 122 BPM';next=performance.now();limit=setTimeout(()=>stop('Лимит 60 секунд'),60000);tick();}
+button.addEventListener('click',()=>{if(active){stop();return;}if(window.confirm('Включить '+(supported?'тактильную и визуальную':'визуальную')+' пульсацию 122 BPM на срок до 60 секунд? Повторное нажатие остановит её.'))start();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&active)stop('Страница скрыта');});
+window.addEventListener('pagehide',()=>{if(active)stop('Страница закрыта');});
+try{tg?.onEvent('deactivated',()=>{if(active)stop('Приложение неактивно');});}catch(e){}
+</script></body></html>
