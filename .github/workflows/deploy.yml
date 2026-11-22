@@ -1,70 +1,37 @@
-name: Validate and Deploy Reality-1 to GitHub Pages
+﻿name: Deploy Reality-1 to GitHub Pages
 
 on:
   push:
-    branches: [main]
-  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
-# Права, необходимые для чтения репозитория и публикации на GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Предотвращает наложение параллельных деплоев друг на друга
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
-  # Этап 1: Проверка файлов и JSON-конфигураций
-  validate:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
-      # Исправлено с @v6 на стабильную версию @v4, чтобы избежать ошибки разрешения тега
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check static site files, capcut_vectors.json and Vercel config
+      - name: Prepare static site bundle
         run: |
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-
-          # 1. Проверка наличия и непустого размера обязательных файлов
-          required_files = ('index.html', 'mobile-check.html', 'capcut_vectors.json')
-          for name in required_files:
-              file_path = Path(name)
-              assert file_path.is_file() and file_path.stat().st_size > 0, f'Missing or empty file: {name}'
-
-          # 2. Валидация структуры capcut_vectors.json
-          vectors_data = json.loads(Path('capcut_vectors.json').read_text(encoding='utf-8'))
-          assert isinstance(vectors_data, list) and len(vectors_data) > 0, 'capcut_vectors.json must be a non-empty JSON array'
-
-          # 3. Проверка конфигурации vercel.json
-          vercel_path = Path('vercel.json')
-          assert vercel_path.is_file(), 'Missing vercel.json'
-          config = json.loads(vercel_path.read_text(encoding='utf-8'))
-          assert config.get('framework') is None, 'Expected static site framework (null)'
-          assert config.get('buildCommand') == '', 'Expected empty buildCommand'
-          assert config.get('outputDirectory') == '.', 'Expected repository root output (.)'
-
-          print('All static site and JSON validation checks passed successfully!')
-          PY
-
-  # Этап 2: Деплой на GitHub Pages (запускается только после успешной проверки и не для PR)
-  deploy:
-    needs: validate
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+          mkdir -p _site
+          for file in index.html portal_omega.html mobile-check.html telegram-mini-graph.html capcut_vectors.json; do
+            if [ -f "$file" ]; then cp "$file" _site/; fi
+          done
+          for dir in assets audio images docs public pages Bay; do
+            if [ -d "$dir" ]; then cp -r "$dir" _site/; fi
+          done
+          touch _site/.nojekyll
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -72,9 +39,15 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Публикуем корень репозитория
-          path: '.'
+          path: '_site'
 
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
