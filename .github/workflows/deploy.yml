@@ -1,4 +1,4 @@
-﻿name: Deploy Reality-1 to GitHub Pages
+name: Deploy Reality-1 to GitHub Pages
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
           touch _site/.nojekyll
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6.0.0
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
